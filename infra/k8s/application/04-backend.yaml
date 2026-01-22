@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: gangwon
+  namespace: choihyeongyun
 spec:
   replicas: 2
   strategy:
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: upstage-gangwon-backend:lite
+        image: gangwon-choihyeongyun-backend:lite
         ports:
         - containerPort: 8880
         resources:
@@ -48,7 +48,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend
-  namespace: gangwon
+  namespace: choihyeongyun
 spec:
   selector:
     app: backend

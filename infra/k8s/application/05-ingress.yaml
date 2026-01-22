@@ -2,11 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: backend-ingress
-  namespace: gangwon
+  namespace: choihyeongyun
 spec:
-  ingressClassName: nginx
   rules:
-    - host: gangwon-inspire12.duckdns.org
+    - host: choihyeongyun-gangwon.duckdns.org
       http:
         paths:
           - path: /

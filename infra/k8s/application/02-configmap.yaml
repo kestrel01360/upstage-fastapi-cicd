@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
-  namespace: gangwon
+  namespace: choihyeongyun
 data:
   CHROMA_HOST: "chromadb"
   CHROMA_PORT: "8000"
