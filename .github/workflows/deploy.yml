@@ -47,4 +47,4 @@ jobs:
           script: |
             cd ~/upstage-gangwon-fastapi-lecture/infra/k8s/application
             sed -i "s|image: .*gangwon-choihyeongyun:.*|image: ghcr.io/${{ github.repository_owner }}/gangwon-choihyeongyun:${{ steps.get_version.outputs.VERSION }}|g" 04-backend.yaml
-            kubectl apply -f 04-backend.yaml -n choihyeongyun
+            sudo kubectl apply -f 04-backend.yaml -n choihyeongyun
