@@ -3,20 +3,20 @@ name: Deploy to Kubernetes
 on:
   push:
     branches:
-      - [cite_start]deploy/version  # 이 브랜치에 푸시될 때 작동합니다 [cite: 34]
+      - deploy/version
 
 permissions:
-  [cite_start]packages: write  # GHCR 이미지 업로드 권한 [cite: 35, 59]
+  packages: write
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        [cite_start]uses: actions/checkout@v4  # 코드 가져오기 [cite: 37]
+        uses: actions/checkout@v4
 
       - name: Log in to GitHub Container Registry
-        [cite_start]uses: docker/login-action@v3  # GHCR 로그인 [cite: 38]
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -27,10 +27,10 @@ jobs:
         run: |
           VERSION=$(grep '^version =' pyproject.toml | cut -d '"' -f 2)
           SHA=$(echo $GITHUB_SHA | cut -c1-7)
-          echo "VERSION=$VERSION-$SHA" >> $GITHUB_OUTPUT  # 버전+커밋해시 생성 [cite: 39, 60]
+          echo "VERSION=$VERSION-$SHA" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
-        [cite_start]uses: docker/build-push-action@v5  # 이미지 빌드 및 푸시 [cite: 40]
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
@@ -39,13 +39,12 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/gangwon-choihyeongyun:latest
 
       - name: Deploy to EC2 via SSH
-        [cite_start]uses: appleboy/ssh-action@master  # EC2 원격 접속 배포 [cite: 41]
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # K8s 매니페스트의 이미지 태그를 새 버전으로 교체 후 적용 [cite: 41]
             cd ~/upstage-gangwon-fastapi-lecture/infra/k8s/application
             sed -i "s|image: .*gangwon-choihyeongyun:.*|image: ghcr.io/${{ github.repository_owner }}/gangwon-choihyeongyun:${{ steps.get_version.outputs.VERSION }}|g" 04-backend.yaml
             kubectl apply -f 04-backend.yaml -n choihyeongyun
